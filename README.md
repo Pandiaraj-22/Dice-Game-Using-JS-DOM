@@ -1,4 +1,5 @@
 Dice Game 🎲
+
 => It is a 2 player game with following rules:
 ☆ Randomly set any one player to start the game
 ☆ Once dice is rolled corresponding number should be added with corresponding player score
