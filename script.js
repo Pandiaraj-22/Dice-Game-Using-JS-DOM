@@ -1,102 +1,69 @@
-// Random function for Dice
-function random1() {
-    const rand = Math.floor(Math.random() * 6) + 1;
-    return rand;
-}
-function random2() {
-    const rand = Math.floor(Math.random() * 6) + 1;
-    return rand;
+const root = document.getElementById('root');
+const dice = document.getElementById('dice');
+const playerMove = document.getElementById('player-move');
+const player1Score = document.getElementById('player1-score');
+const player2Score = document.getElementById('player2-score');
+const player1Button = document.getElementById('player1-button');
+const player2Button = document.getElementById('player2-button');
+
+// const diceFaces = [
+//     'image/1.png',
+//     'image/2.png',
+//     'image/3.png',
+//     'image/4.png',
+//     'image/5.png', 'image/6.png'
+// ]
+
+const handleStart = () => {
+    const playerStart = Math.floor((Math.random()*2) + 1);
+    updateMoves(playerStart === 1? 'Player-1': 'Player-2');
 }
 
-//Disabling any one button at load
-
-function loadran() {
-    const dice = document.getElementById("dice");
-    dice.src = "./images/" + random1() + ".png"
-}
-const randload = Math.floor(Math.random() * 2) + 1;
-function load() {
-    if (randload === 1) {
-        button1.setAttribute("disabled", " ")
-        loadran();
+const updateMoves = (player) => {
+    playerMove.innerText = `${player} To Play`;
+    if(player === 'Player-1') {
+        player1Button.disabled = false;
+        player2Button.disabled = true;
     } else {
-        button2.setAttribute("disabled", " ")
-        loadran();
-    }
-}
-load();
-
-
-//  Button created and function created for click event
-button1 = document.getElementById("button1");
-button1.addEventListener("click", rolldie1);
-
-button2 = document.getElementById("button2");
-button2.addEventListener("click", rolldie2);
-
-function rolldie1() {
-    let ran1 = random1();
-    const dice = document.getElementById("dice");
-    dice.src = "./images/" + ran1 + ".png"
-    button1.setAttribute("disabled", "");
-    button2.removeAttribute("disabled");
-    var initial1 = document.getElementById("p1-id").innerHTML;
-    var add1 = parseInt(initial1) + parseInt(ran1);
-    document.getElementById("p1-id").innerHTML = add1;
-    document.getElementById("h1").innerHTML = "Player-2 to Play"
-    if (add1 >= 30) {
-        button1.disabled = true;
-        button2.disabled = true;
-        reset.disabled = false;
-        const win = document.getElementById("h1");
-        win.innerHTML = "Player-1 Wins💥💫";
+        player1Button.disabled = true;
+        player2Button.disabled = false;
     }
 }
 
-function rolldie2() {
-    let ran2 = random2();
-    const dice = document.getElementById("dice");
-    dice.src = "./images/" + ran2 + ".png"
-    button2.setAttribute("disabled", "");
-    button1.removeAttribute("disabled");
-    var initial2 = document.getElementById("p2-id").innerHTML;
-    var add2 = parseInt(initial2) + parseInt(ran2);
-    document.getElementById("p2-id").innerHTML = add2;
-    document.getElementById("h1").innerHTML = "Player-1 to Play"
-    if (add2 >= 30) {
-        button1.disabled = true;
-        button2.disabled = true;
-        reset.disabled = false;
-        const win = document.getElementById("h1");
-        win.innerHTML = "Player-2 Wins 💥😎";
+const updateScore = (player, score, playerScore) => {
+    const currentScore = playerScore.innerText;
+    const totalScore = Number(currentScore) + score;
+    playerScore.innerText = totalScore;
+    checkIsGameOver(totalScore, player);
+}
+
+const handleDiceRoll = (player) => {
+    dice.classList.add('rotate');
+    setTimeout(() => {
+        dice.classList.remove('rotate');
+        const score = Math.floor((Math.random() * 6) + 1);
+        dice.src = `images/${score}.png`;
+        if(player === 'Player-1') {
+            updateMoves('Player-2');
+            updateScore(player, score, player1Score);
+        } else {
+            updateMoves('Player-1');
+            updateScore(player, score, player2Score);
+        }
+    }, 1000);
+}
+
+const checkIsGameOver = (totalScore, player) => {
+    if(totalScore >= 30) {
+        player1Button.disabled = true;
+        player2Button.disabled = true;
+        playerMove.innerText = `${player} Won The Game!🎉`;
     }
 }
 
-
-//Button created and function created for reset function
-const reset = document.getElementById("rst");
-reset.disabled = true;
-reset.addEventListener("click", () => {
-    document.getElementById("p1-id").innerHTML = 0;
-    document.getElementById("p2-id").innerHTML = 0;
-    const random = Math.floor(Math.random() * 2) + 1
-    if (random === 1) {
-        button1.disabled = false;
-    } else {
-        button2.disabled = false;
-    }
-    reset.disabled = true
-    if (button1.disabled == false) {
-        document.getElementById("h1").innerHTML = "Player-1 to Play"
-    } else {
-        document.getElementById("h1").innerHTML = "Player-2 to Play"
-    }
-})
-
-
-//Creating Heading Dynamically
-if (button1.disabled == false) {
-    document.getElementById("h1").innerHTML = "Player-1 to Play"
-} else {
-    document.getElementById("h1").innerHTML = "Player-2 to Play"
+const handleReset = () => {
+    player1Score.innerText = 0;
+    player2Score.innerText = 0;
+    dice.src = 'images/1.png';
+    handleStart();
 }
